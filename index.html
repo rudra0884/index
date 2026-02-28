@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rudra | Pro Web Developer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <style>
+        /* --- ADVANCED CSS VARIABLES --- */
+        :root {
+            --bg-dark: #050505;
+            --bg-light: #111111;
+            --primary: #00f2ff;
+            --secondary: #0066ff;
+            --text-main: #ffffff;
+            --text-muted: #aaaaaa;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        /* --- RESET & BASE --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* --- ANIMATED BACKGROUND BLOBS --- */
+        .bg-animation {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; overflow: hidden;
+        }
+        .blob {
+            position: absolute; border-radius: 50%; filter: blur(80px);
+            animation: float 20s infinite alternate;
+        }
+        .blob-1 { top: 0; left: 0; width: 600px; height: 600px; background: rgba(0, 102, 255, 0.15); }
+        .blob-2 { bottom: 0; right: 0; width: 500px; height: 500px; background: rgba(0, 242, 255, 0.1); animation-delay: 5s; }
+        
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(50px, 50px) scale(1.2); }
+        }
+
+        /* --- PRELOADER --- */
+        #preloader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-dark); z-index: 9999;
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        .spinner {
+            width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.1);
+            border-top-color: var(--primary); border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .hidden { opacity: 0; visibility: hidden; }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed; top: 0; width: 100%; padding: 1.5rem 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(5, 5, 5, 0.8); backdrop-filter: blur(20px);
+            z-index: 100; border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .logo-svg { height: 45px; width: 45px; transition: transform 0.3s; }
+        .logo-svg:hover { transform: rotate(360deg); }
+
+        .nav-links { display: flex; gap: 3rem; }
+        .nav-links a {
+            color: var(--text-muted); text-decoration: none; font-weight: 600;
+            text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px;
+            transition: 0.3s; position: relative;
+        }
+        .nav-links a:hover { color: var(--primary); }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: -5px; left: 0;
+            width: 0; height: 2px; background: var(--primary);
+            transition: width 0.3s;
+        }
+        .nav-links a:hover::after { width: 100%; }
+
+        /* Mobile Menu */
+        .hamburger { display: none; cursor: pointer; z-index: 200; }
+        .bar { width: 25px; height: 3px; background: var(--text-main); margin: 5px auto; transition: 0.3s; }
+        
+        /* --- HERO SECTION --- */
+        .hero {
+            min-height: 100vh; display: flex; align-items: center; padding: 0 10%;
+        }
+        .hero-content { max-width: 800px; }
+        .hero-tag {
+            display: inline-block; padding: 0.5rem 1rem; background: var(--glass);
+            border: 1px solid var(--glass-border); border-radius: 50px;
+            color: var(--primary); font-size: 0.9rem; margin-bottom: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+        .hero h1 {
+            font-family: 'Poppins', sans-serif; font-size: 4.5rem; line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+        .hero h1 span { color: var(--primary); }
+        .typing-text { border-right: 3px solid var(--primary); animation: blink 0.7s infinite; }
+        @keyframes blink { 0%, 100% { border-color: transparent } 50% { border-color: var(--primary) } }
+
+        .hero p { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 2.5rem; line-height: 1.8; }
+        
+        .hero-btns { display: flex; gap: 1.5rem; }
+        .btn-primary {
+            padding: 1rem 2.5rem; background: linear-gradient(45deg, var(--secondary), var(--primary));
+            color: #fff; font-weight: 700; border-radius: 50px; text-decoration: none;
+            box-shadow: 0 10px 30px rgba(0, 242, 255, 0.3); transition: 0.3s; border: none; cursor: pointer;
+        }
+        .btn-primary:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0, 242, 255, 0.4); }
+        .btn-outline {
+            padding: 1rem 2.5rem; border: 2px solid var(--glass-border); color: var(--text-main);
+            font-weight: 700; border-radius: 50px; text-decoration: none; background: var(--glass);
+            backdrop-filter: blur(10px); transition: 0.3s;
+        }
+        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+
+        /* --- SECTION STYLING --- */
+        .section { padding: 6rem 10%; position: relative; }
+        .section-title { text-align: center; margin-bottom: 4rem; }
+        .section-title h2 { font-size: 2.8rem; margin-bottom: 0.5rem; }
+        .section-title p { color: var(--text-muted); max-width: 600px; margin: 0 auto; }
+        .underline { width: 100px; height: 5px; background: var(--primary); margin: 1rem auto 0; border-radius: 5px; }
+
+        /* Reveal Animation Classes */
+        .reveal { position: relative; transform: translateY(50px); opacity: 0; transition: all 0.8s ease; }
+        .reveal.active { transform: translateY(0); opacity: 1; }
+
+        /* --- SKILLS SECTION --- */
+        .skills-container { display: flex; gap: 4rem; flex-wrap: wrap; }
+        .skills-left, .skills-right { flex: 1; min-width: 300px; }
+        .skill-box { margin-bottom: 2rem; }
+        .skill-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
+        .progress-bg { width: 100%; height: 10px; background: var(--bg-light); border-radius: 10px; overflow: hidden; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, var(--secondary), var(--primary)); width: 0; transition: width 1.5s ease-in-out; border-radius: 10px; }
+
+        /* --- PORTFOLIO GRID --- */
+        .portfolio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; }
+        .p-card {
+            position: relative; height: 400px; border-radius: 20px; overflow: hidden;
+            border: 1px solid var(--glass-border); cursor: pointer;
+        }
+        .p-card img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .p-card:hover img { transform: scale(1.1); opacity: 0.3; }
+        .p-overlay {
+            position: absolute; inset: 0; padding: 2rem; display: flex; flex-direction: column;
+            justify-content: flex-end; background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            opacity: 0; transform: translateY(20px); transition: 0.4s;
+        }
+        .p-card:hover .p-overlay { opacity: 1; transform: translateY(0); }
+        .p-tags { display: flex; gap: 10px; margin-bottom: 10px; }
+        .p-tags span { font-size: 0.7rem; padding: 5px 10px; background: rgba(255,255,255,0.1); border-radius: 20px; color: var(--primary); }
+        .p-overlay h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+
+        /* --- PROCESS TIMELINE --- */
+        .process-section { background: var(--bg-light); clip-path: polygon(0 5%, 100% 0, 100% 95%, 0 100%); padding: 8rem 10%; }
+        .timeline { display: flex; justify-content: space-between; position: relative; margin-top: 4rem; }
+        .timeline::before { content: ''; position: absolute; top: 20px; left: 0; width: 100%; height: 2px; background: var(--glass-border); }
+        .t-item { text-align: center; position: relative; width: 20%; }
+        .t-icon {
+            width: 40px; height: 40px; background: var(--primary); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;
+            font-weight: bold; position: relative; z-index: 2; box-shadow: 0 0 20px var(--primary);
+        }
+        .t-item h3 { margin-bottom: 0.5rem; font-size: 1.1rem; }
+        .t-item p { font-size: 0.8rem; color: var(--text-muted); }
+
+        /* --- CONTACT --- */
+        .contact-box { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4rem; background: var(--glass); padding: 4rem; border-radius: 20px; border: 1px solid var(--glass-border); backdrop-filter: blur(20px); }
+        .contact-info h3 { font-size: 1.5rem; margin-bottom: 1rem; }
+        .c-item { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+        .c-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.05); display: grid; place-items: center; border-radius: 50%; color: var(--primary); font-weight: bold; }
+        
+        .form-group { margin-bottom: 1.5rem; }
+        .form-control {
+            width: 100%; padding: 1rem; background: rgba(0,0,0,0.5); border: 1px solid var(--glass-border);
+            border-radius: 10px; color: var(--text-main); transition: 0.3s;
+        }
+        .form-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 10px rgba(0, 242, 255, 0.2); }
+
+        /* --- FOOTER --- */
+        footer { text-align: center; padding: 4rem 0; border-top: 1px solid var(--glass-border); margin-top: 4rem; }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .hamburger { display: block; }
+            .nav-links { 
+                position: fixed; top: 0; right: -100%; width: 70%; height: 100vh;
+                background: #0a0a0a; flex-direction: column; align-items: center;
+                justify-content: center; transition: 0.5s;
+            }
+            .nav-active { right: 0; }
+            .timeline { flex-direction: column; gap: 3rem; }
+            .process-section { clip-path: none; padding: 4rem 10%; }
+            .contact-box { grid-template-columns: 1fr; padding: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PRELOADER -->
+    <div id="preloader"><div class="spinner"></div></div>
+
+    <!-- ANIMATED BACKGROUND -->
+    <div class="bg-animation">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <!-- NAVIGATION -->
+    <nav>
+        <a href="#" class="logo-container">
+            <svg class="logo-svg" viewBox="0 0 100 100">
+                <defs>
+                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:var(--secondary);stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:var(--primary);stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <circle cx="50" cy="50" r="45" fill="none" stroke="url(#grad1)" stroke-width="5"/>
+                <path d="M30 70 L30 30 L55 30 C65 30 70 38 70 45 C70 55 60 50 55 55 L70 70" stroke="url(#grad1)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+        </a>
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#work">Work</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <div class="hamburger">
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section id="about" class="hero">
+        <div class="hero-content">
+            <span class="hero-tag">Freelance Web Expert</span>
+            <h1>Hi, I'm Rudra. <br>I Build <span class="typing-text"></span></h1>
+            <p>I craft high-performance, scalable websites and web applications. With 40+ successful projects delivered, I turn complex problems into simple, beautiful digital experiences.</p>
+            <div class="hero-btns">
+                <a href="https://www.ideasbeyond.in" target="_blank" class="btn-primary">View My Work</a>
+                <a href="#contact" class="btn-outline">Contact Me</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills" class="section">
+        <div class="section-title reveal">
+            <h2>Technical Arsenal</h2>
+            <div class="underline"></div>
+        </div>
+        <div class="skills-container">
+            <div class="skills-left reveal">
+                <h3 style="margin-bottom: 2rem;">Development</h3>
+                <div class="skill-box">
+                    <div class="skill-header"><span>React / Next.js</span><span>95%</span></div>
+                    <div class="progress-bg"><div class="progress-bar" data-width="95"></div></div>
+                </div>
+                <div class="skill-box">
+                    <div class="skill-header"><span>UI/UX Design</span><span>90%</span></div>
+                    <div class="progress-bg"><div class="progress-bar" data-width="90"></div></div>
+                </div>
+                <div class="skill-box">
+                    <div class="skill-header"><span>Node.js / Backend</span><span>80%</span></div>
+                    <div class="progress-bg"><div class="progress-bar" data-width="80"></div></div>
+                </div>
+            </div>
+            <div class="skills-right reveal">
+                <h3 style="margin-bottom: 2rem;">Experience</h3>
+                <div style="background: rgba(255,255,255,0.02); padding: 2rem; border-radius: 15px; border-left: 3px solid var(--primary);">
+                    <h4 style="color: var(--primary); margin-bottom: 0.5rem;">40+ Projects Completed</h4>
+                    <p style="color: var(--text-muted);">From startups to established businesses, I've delivered high-quality solutions across e-commerce, SaaS, and real estate sectors.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROCESS -->
+    <section class="process-section">
+        <div class="section-title reveal">
+            <h2>My Work Process</h2>
+            <div class="underline"></div>
+        </div>
+        <div class="timeline reveal">
+            <div class="t-item">
+                <div class="t-icon">1</div>
+                <h3>Discovery</h3>
+                <p>Understanding goals and requirements.</p>
+            </div>
+            <div class="t-item">
+                <div class="t-icon">2</div>
+                <h3>Design</h3>
+                <p>Wireframes & UI prototypes.</p>
+            </div>
+            <div class="t-item">
+                <div class="t-icon">3</div>
+                <h3>Develop</h3>
+                <p>Coding & Core Functionality.</p>
+            </div>
+            <div class="t-item">
+                <div class="t-icon">4</div>
+                <h3>Launch</h3>
+                <p>Deployment & Optimization.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- WORK -->
+    <section id="work" class="section">
+        <div class="section-title reveal">
+            <h2>Selected Projects</h2>
+            <div class="underline"></div>
+        </div>
+        <div class="portfolio-grid">
+            <div class="p-card reveal">
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="Project 1">
+                <div class="p-overlay">
+                    <div class="p-tags"><span>React</span><span>SaaS</span></div>
+                    <h3>Analytics Dashboard</h3>
+                    <p>A complete admin solution for data visualization.</p>
+                </div>
+            </div>
+            <div class="p-card reveal">
+                <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=800&q=80" alt="Project 2">
+                <div class="p-overlay">
+                    <div class="p-tags"><span>Shopify</span><span>E-com</span></div>
+                    <h3>Urban Fashion Store</h3>
+                    <p>High-conversion e-commerce experience.</p>
+                </div>
+            </div>
+            <div class="p-card reveal">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80" alt="Project 3">
+                <div class="p-overlay">
+                    <div class="p-tags"><span>Next.js</span><span>Web App</span></div>
+                    <h3>Finance Portfolio</h3>
+                    <p>Modern portfolio tracking application.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="section">
+        <div class="section-title reveal">
+            <h2>Let's Connect</h2>
+            <div class="underline"></div>
+        </div>
+        <div class="contact-box reveal">
+            <div class="contact-info">
+                <h3>Get in Touch</h3>
+                <p style="color: var(--text-muted); margin-bottom: 2rem;">Ready to start your project? Contact me for a consultation.</p>
+                <div class="c-item">
+                    <div class="c-icon">@</div>
+                    <span>rudra0884@outlook.com</span>
+                </div>
+                <div class="c-item">
+                    <div class="c-icon">#</div>
+                    <span>Mumbai, India</span>
+                </div>
+            </div>
+            
+            <!-- UPDATED FORM: Action points to Formsubmit for free email forwarding -->
+            <form action="https://formsubmit.co/rudra0884@outlook.com" method="POST">
+                <!-- Hidden inputs for better email formatting -->
+                <input type="hidden" name="_subject" value="New Contact Form Submission from Rudra's Site">
+                <input type="text" name="_honey" style="display:none">
+                <input type="hidden" name="_captcha" value="false">
+                
+                <div class="form-group">
+                    <input type="text" name="name" class="form-control" placeholder="Your Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" name="email" class="form-control" placeholder="Your Email" required>
+                </div>
+                <div class="form-group">
+                    <textarea class="form-control" name="message" rows="4" placeholder="Project Details" required></textarea>
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%;">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2023 Rudra Digital. Crafted with Passion.</p>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // 1. PRELOADER
+        window.addEventListener('load', () => {
+            document.getElementById('preloader').classList.add('hidden');
+        });
+
+        // 2. TYPING EFFECT
+        const texts = ["Digital Experiences.", "Scalable Web Apps.", "E-Commerce Sites.", "UI/UX Solutions."];
+        let count = 0;
+        let index = 0;
+        let currentText = '';
+        let letter = '';
+        const typingElement = document.querySelector('.typing-text');
+
+        (function type() {
+            if (count === texts.length) count = 0;
+            currentText = texts[count];
+            letter = currentText.slice(0, ++index);
+            
+            typingElement.textContent = letter;
+            if (letter.length === currentText.length) {
+                count++;
+                index = 0;
+                setTimeout(type, 2000); // Pause before next word
+            } else {
+                setTimeout(type, 100); // Typing speed
+            }
+        }());
+
+        // 3. SCROLL REVEAL
+        function reveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            reveals.forEach(element => {
+                const windowHeight = window.innerHeight;
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < windowHeight - elementVisible) {
+                    element.classList.add('active');
+                    
+                    // Trigger skill bar animation
+                    if (element.querySelector('.progress-bar')) {
+                        const bars = element.querySelectorAll('.progress-bar');
+                        bars.forEach(bar => {
+                            const width = bar.getAttribute('data-width');
+                            bar.style.width = width + '%';
+                        });
+                    }
+                }
+            });
+        }
+        window.addEventListener('scroll', reveal);
+        reveal(); // Initial check
+
+        // 4. MOBILE MENU
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+        
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('nav-active');
+        });
+
+        // Close menu when link clicked
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('nav-active');
+            });
+        });
+    </script>
+</body>
+</html>
